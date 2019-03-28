@@ -34,18 +34,18 @@ VERSION_MAJOR := 1
 VERSION_MINOR := 1
 VERSION_MICRO := 0
 
-APP_TITLE	:=	Kosmos Toolbox
-APP_AUTHOR	:=	WerWolv
+APP_TITLE	:=	Atmosphere Toolbox
+APP_AUTHOR	:=	WerWolv / 8BitWonder
 APP_VERSION	:=	${VERSION_MAJOR}.${VERSION_MINOR}.${VERSION_MICRO}
 
 TARGET		:=	$(notdir $(CURDIR))
-OUTDIR    := out
+OUTDIR		:=	out
 BUILD		:=	build
 SOURCES		:=	source source/ini
 DATA		:=	data
 INCLUDES	:=	include include/ini
 EXEFS_SRC	:=	exefs_src
-#ROMFS	:=	romfs
+#ROMFS		:=	romfs
 
 #---------------------------------------------------------------------------------
 # options for code generation
