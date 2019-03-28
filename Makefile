@@ -34,7 +34,7 @@ VERSION_MAJOR := 1
 VERSION_MINOR := 1
 VERSION_MICRO := 0
 
-APP_TITLE	:=	Atmosphere Toolbox
+APP_TITLE	:=	Atmosphere Toolkit
 APP_AUTHOR	:=	WerWolv / 8BitWonder
 APP_VERSION	:=	${VERSION_MAJOR}.${VERSION_MINOR}.${VERSION_MICRO}
 
