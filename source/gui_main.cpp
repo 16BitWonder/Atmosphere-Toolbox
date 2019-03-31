@@ -12,8 +12,7 @@ static u16 currAutoBootEntryIndex;
 static u16 currOverrideTidIndex;
 
 GuiMain::GuiMain() : Gui() {
-	Ini *ini = Ini::parseFile(LOADER_INI);
-	initLoader(ini->findSection("hbl_config")->findFirstOption("override_key")->value, &m_overrideKeyCombo, &m_overrideByDefault, ini->findSection("hbl_config")->findFirstOption("override_any_app")->value, &m_overrideAllAppByDefault, ini->findSection("default_config")->findFirstOption("override_key")->value, &m_overrideMITMKeyCombo, &m_overrideMITMByDefault, ini->findSection("default_config")->findFirstOption("cheat_enable_key")->value, &m_overrideCheatKeyCombo, &m_overrideCheatByDefault);
+	initLoader(&m_overrideAllAppByDefault, &m_overrideKeyCombo, &m_overrideByDefault, &m_overrideMITMKeyCombo, &m_overrideMITMByDefault, &m_overrideCheatKeyCombo, &m_overrideCheatByDefault);
 	printf("%lx\n", m_overrideKeyCombo);
 
 	m_currAutoBootConfig = getAutoBootConfigs(m_autoBootConfigs, currAutoBootEntryIndex);
@@ -141,7 +140,7 @@ GuiMain::GuiMain() : Gui() {
 				delete ini;
 			}
 		}
-	}, { 4, -1, -1, -1 }, true);
+	}, { 4, -1, -1, 5 }, true);
 }
 
 GuiMain::~GuiMain() {
@@ -224,12 +223,13 @@ void GuiMain::keyCharsToKey(std::string str, u64 *key, bool *overrideByDefault) 
 	else if (str == "SR") *key = KEY_SR;
 }
 
-void GuiMain::initLoader(std::string keyStr, u64 *key, bool *overrideByDefault, std::string allAppStr, bool *overrideAllAppByDefault, std::string MITMkeyStr, u64 *MITMkey, bool *overrideMITMByDefault, std::string CheatkeyStr, u64 *Cheatkey, bool *overrideCheatByDefault) {
-	*overrideAllAppByDefault = (allAppStr == "true");
+void GuiMain::initLoader(bool *overrideAllAppByDefault, u64 *key, bool *overrideByDefault, u64 *MITMkey, bool *overrideMITMByDefault, u64 *Cheatkey, bool *overrideCheatByDefault) {
+	Ini *ini = Ini::parseFile(LOADER_INI);
+	*overrideAllAppByDefault = (ini->findSection("hbl_config")->findFirstOption("override_any_app")->value == "true");
 
-	GuiMain::keyCharsToKey(keyStr, key, overrideByDefault);
-	GuiMain::keyCharsToKey(MITMkeyStr, MITMkey, overrideMITMByDefault);
-	GuiMain::keyCharsToKey(CheatkeyStr, Cheatkey, overrideCheatByDefault);
+	GuiMain::keyCharsToKey(ini->findSection("hbl_config")->findFirstOption("override_key")->value, key, overrideByDefault);
+	GuiMain::keyCharsToKey(ini->findSection("default_config")->findFirstOption("override_key")->value, MITMkey, overrideMITMByDefault);
+	GuiMain::keyCharsToKey(ini->findSection("default_config")->findFirstOption("cheat_enable_key")->value, Cheatkey, overrideCheatByDefault);
 }
 
 AutoBootEntry GuiMain::getAutoBootConfigs(std::vector<AutoBootEntry> &out_bootEntries, u16 &currAutoBootEntryIndex) {
