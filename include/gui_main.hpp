@@ -48,5 +48,5 @@ private:
 	std::string keyToKeyChars(u64 key, bool overrideByDefault);
 	void keyCharsToKey(std::string str, u64 *key, bool *overrideByDefault);
 	AutoBootEntry getAutoBootConfigs(std::vector<AutoBootEntry> &out_bootEntries, u16 &currAutoBootEntryIndex);
-	void initLoader(std::string keyStr, u64 *key, bool *overrideByDefault, std::string allAppStr, bool *overrideAllAppByDefault, std::string MITMkeyStr, u64 *MITMkey, bool *overrideMITMByDefault, std::string CheatkeyStr, u64 *Cheatkey, bool *overrideCheatByDefault);
+	void initLoader(bool *overrideAllAppByDefault, u64 *key, bool *overrideByDefault, u64 *MITMkey, bool *overrideMITMByDefault, u64 *Cheatkey, bool *overrideCheatByDefault);
 };
