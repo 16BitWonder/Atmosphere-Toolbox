@@ -8,38 +8,45 @@
 #include "ini/ini.hpp"
 
 #define LOADER_INI "sdmc:/atmosphere/loader.ini"
+#define SYSTEM_SETTINGS_INI "sdmc:/atmosphere/system_settings.ini"
 #define HEKATE_INI "sdmc:/bootloader/hekate_ipl.ini"
 #define INI_PATH   "sdmc:/bootloader/ini/"
 
 typedef struct {
-  std::string name;
-  u16 id;
-  bool autoBootList;
+	std::string name;
+	u16 id;
+	bool autoBootList;
 } AutoBootEntry;
 
 class GuiMain : public Gui {
 public:
-  GuiMain();
-  ~GuiMain();
+	GuiMain();
+	~GuiMain();
 
-  void update();
-  void draw();
-  void onInput(u32 kdown);
-  void onTouch(touchPosition &touch);
-  void onGesture(touchPosition &startPosition, touchPosition &endPosition);
+	void update();
+	void draw();
+	void onInput(u32 kdown);
+	void onTouch(touchPosition &touch);
+	void onGesture(touchPosition &startPosition, touchPosition &endPosition);
 
 private:
-  u64 m_overrideKeyCombo;
-  bool m_overrideByDefault;
-  u64 m_overrideHblTid;
+	u64 m_overrideHblTid;
+	bool m_overrideAllAppByDefault;
+	u64 m_overrideKeyCombo;
+	bool m_overrideByDefault;
+	u64 m_overrideMITMKeyCombo;
+	bool m_overrideMITMByDefault;
+	u64 m_overrideCheatKeyCombo;
+	bool m_overrideCheatByDefault;
 
-  AutoBootEntry m_currAutoBootConfig;
-  std::vector<AutoBootEntry> m_autoBootConfigs;
-  std::vector<std::string> m_titleNames;
-  std::vector<u64> m_titleIDs;
+	AutoBootEntry m_currAutoBootConfig;
+	std::vector<AutoBootEntry> m_autoBootConfigs;
+	std::vector<std::string> m_titleNames;
+	std::vector<u64> m_titleIDs;
 
-  const char* keyToUnicode(u64 key);
-  std::string keyToKeyChars(u64 key, bool overrideByDefault);
-  AutoBootEntry getAutoBootConfigs(std::vector<AutoBootEntry> &out_bootEntries, u16 &currAutoBootEntryIndex);
-  void keyCharsToKey(std::string str, u64 *key, bool *overrideByDefault);
+	const char* keyToUnicode(u64 key);
+	std::string keyToKeyChars(u64 key, bool overrideByDefault);
+	void keyCharsToKey(std::string str, u64 *key, bool *overrideByDefault);
+	AutoBootEntry getAutoBootConfigs(std::vector<AutoBootEntry> &out_bootEntries, u16 &currAutoBootEntryIndex);
+	void initLoader(std::string keyStr, u64 *key, bool *overrideByDefault, std::string allAppStr, bool *overrideAllAppByDefault, std::string MITMkeyStr, u64 *MITMkey, bool *overrideMITMByDefault, std::string CheatkeyStr, u64 *Cheatkey, bool *overrideCheatByDefault);
 };
