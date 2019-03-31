@@ -2,7 +2,7 @@
 
 # Atmosphere Toolkit
 
-A toolkit that allows the user to change the settings of both loader.ini and system_settings.ini, designed for use with [Atmosphere](https://github.com/Atmosphere-NX/Atmosphere).
+A toolkit that allows the user to change the settings of both loader.ini and system_settings.ini, designed for use with [Atmosphère](https://github.com/Atmosphere-NX/Atmosphere).
 
 <p align="center"><img src="https://raw.githubusercontent.com/16BitWonder/Atmosphere-Toolkit/dev/img/1.2.0.jpg"></p>
 (v1.2.0 Pictured above)
