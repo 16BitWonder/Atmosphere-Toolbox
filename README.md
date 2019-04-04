@@ -2,7 +2,7 @@
 
 # Atmosphere Toolkit
 
-A toolkit that allows the user to change the settings of both loader.ini and system_settings.ini, designed for use with [Atmosphère](https://github.com/Atmosphere-NX/Atmosphere).
+A toolkit that allows the user to change the settings of both loader.ini and (eventually) system_settings.ini, designed for use with [Atmosphère](https://github.com/Atmosphere-NX/Atmosphere).
 
 <p align="center"><img src="https://raw.githubusercontent.com/16BitWonder/Atmosphere-Toolkit/dev/img/1.2.0.jpg"></p>
 (v1.2.0 Pictured above)
@@ -24,5 +24,5 @@ A toolkit that allows the user to change the settings of both loader.ini and sys
 - Toggling always save cheat toggles
 
 ## Credits
-- WerWolv - For the original Kosmos Updater that this is forked from
+- WerWolv - For the original Kosmos-Toolbox that this is forked from
 - Reswitched - For the assets used to make the icon
