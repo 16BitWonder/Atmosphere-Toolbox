@@ -39,6 +39,13 @@ private:
 	u64 m_overrideCheatKeyCombo;
 	bool m_overrideCheatByDefault;
 
+	bool m_uploadErrors;
+	bool m_usb30;
+	std::string m_rebootBehavior;
+	bool m_cheatsEnabledByDefault;
+	bool m_saveCheatToggles;
+
+
 	AutoBootEntry m_currAutoBootConfig;
 	std::vector<AutoBootEntry> m_autoBootConfigs;
 	std::vector<std::string> m_titleNames;
@@ -49,4 +56,5 @@ private:
 	void keyCharsToKey(std::string str, u64 *key, bool *overrideByDefault);
 	AutoBootEntry getAutoBootConfigs(std::vector<AutoBootEntry> &out_bootEntries, u16 &currAutoBootEntryIndex);
 	void initLoader(bool *overrideAllAppByDefault, u64 *key, bool *overrideByDefault, u64 *MITMkey, bool *overrideMITMByDefault, u64 *Cheatkey, bool *overrideCheatByDefault);
+	void initSystemSettings(void);
 };
