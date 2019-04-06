@@ -13,8 +13,7 @@ static u16 currOverrideTidIndex;
 
 GuiMain::GuiMain() : Gui() {
 	initLoader(&m_overrideAllAppByDefault, &m_overrideKeyCombo, &m_overrideByDefault, &m_overrideMITMKeyCombo, &m_overrideMITMByDefault, &m_overrideCheatKeyCombo, &m_overrideCheatByDefault);
-	initSystemSettings();
-	// TODO - Fill this in as you go
+	initSystemSettings(&m_uploadErrors, &m_usb30, &m_cheatsActiveByDefault, &m_saveCheatToggles);
 	printf("%lx\n", m_overrideKeyCombo);
 
 	m_currAutoBootConfig = getAutoBootConfigs(m_autoBootConfigs, currAutoBootEntryIndex);
@@ -147,20 +146,32 @@ GuiMain::GuiMain() : Gui() {
 	// Button 7 - Upload error reports button
 	new Button(735, 100, 505, 80, [&](Gui *gui, u16 x, u16 y, bool *isActivated) {
 		gui->drawTextAligned(font20, x + 20, y + 50, currTheme.textColor, "Upload Error Reports", ALIGNED_LEFT);
-		gui->drawTextAligned(font20, x + 435, y + 50, m_overrideCheatByDefault ? currTheme.selectedColor : Gui::makeColor(0xB8, 0xBB, 0xC2, 0xFF), "--", ALIGNED_LEFT);
+		gui->drawTextAligned(font20, x + 435, y + 50, m_uploadErrors ? currTheme.selectedColor : Gui::makeColor(0xB8, 0xBB, 0xC2, 0xFF), m_uploadErrors ? "On" : "Off", ALIGNED_LEFT);
 	}, [&](u32 kdown, bool *isActivated) {
 		if (kdown & KEY_A) {
+			m_uploadErrors = !m_uploadErrors;
+			Ini *ini = Ini::parseFile(SYSTEM_SETTINGS_INI);
+			auto ini_upload_errors = ini->findSection("eupld")->findFirstOption("upload_enabled ");
+			ini_upload_errors->value = GuiMain::toggleSystemSetting(m_uploadErrors);
 
+			ini->writeToFile(SYSTEM_SETTINGS_INI);
+			delete ini;
 		}
 	}, { -1, 8, 1, -1 }, false);
 
 	// Button 8 - Enable USB 3.0 button
 	new Button(735, 190, 505, 80, [&](Gui *gui, u16 x, u16 y, bool *isActivated) {
 		gui->drawTextAligned(font20, x + 20, y + 50, currTheme.textColor, "Enable USB 3.0", ALIGNED_LEFT);
-		gui->drawTextAligned(font20, x + 435, y + 50, m_overrideCheatByDefault ? currTheme.selectedColor : Gui::makeColor(0xB8, 0xBB, 0xC2, 0xFF), "--", ALIGNED_LEFT);
+		gui->drawTextAligned(font20, x + 435, y + 50, m_usb30 ? currTheme.selectedColor : Gui::makeColor(0xB8, 0xBB, 0xC2, 0xFF), m_usb30 ? "On" : "Off", ALIGNED_LEFT);
 	}, [&](u32 kdown, bool *isActivated) {
 		if (kdown & KEY_A) {
+			m_usb30 = !m_usb30;
+			Ini *ini = Ini::parseFile(SYSTEM_SETTINGS_INI);
+			auto ini_usb_30 = ini->findSection("usb")->findFirstOption("usb30_force_enabled ");
+			ini_usb_30->value = GuiMain::toggleSystemSetting(m_usb30);
 
+			ini->writeToFile(SYSTEM_SETTINGS_INI);
+			delete ini;
 		}
 	}, { 7, 9, 2, -1 }, false);
 
@@ -170,27 +181,39 @@ GuiMain::GuiMain() : Gui() {
 		gui->drawTextAligned(font20, x + 435, y + 50, m_overrideCheatByDefault ? currTheme.selectedColor : Gui::makeColor(0xB8, 0xBB, 0xC2, 0xFF), "--", ALIGNED_LEFT);
 	}, [&](u32 kdown, bool *isActivated) {
 		if (kdown & KEY_A) {
-
+			// TODO
 		}
 	}, { 8, 10, 3, -1 }, false);
 
 	// Button 10 - Cheats active by defualt button
 	new Button(735, 370, 505, 80, [&](Gui *gui, u16 x, u16 y, bool *isActivated) {
 		gui->drawTextAligned(font20, x + 20, y + 50, currTheme.textColor, "Cheats active by default", ALIGNED_LEFT);
-		gui->drawTextAligned(font20, x + 435, y + 50, m_overrideCheatByDefault ? currTheme.selectedColor : Gui::makeColor(0xB8, 0xBB, 0xC2, 0xFF), "--", ALIGNED_LEFT);
+		gui->drawTextAligned(font20, x + 435, y + 50, m_cheatsActiveByDefault ? currTheme.selectedColor : Gui::makeColor(0xB8, 0xBB, 0xC2, 0xFF), m_cheatsActiveByDefault ? "On" : "Off", ALIGNED_LEFT);
 	}, [&](u32 kdown, bool *isActivated) {
 		if (kdown & KEY_A) {
+			m_cheatsActiveByDefault = !m_cheatsActiveByDefault;
+			Ini *ini = Ini::parseFile(SYSTEM_SETTINGS_INI);
+			auto ini_cheats_active = ini->findSection("atmosphere")->findFirstOption("dmnt_cheats_enabled_by_default ");
+			ini_cheats_active->value = GuiMain::toggleSystemSetting(m_cheatsActiveByDefault);
 
+			ini->writeToFile(SYSTEM_SETTINGS_INI);
+			delete ini;
 		}
 	}, { 9, 11, 5, -1 }, false);
 
 	// Button 11 - Save Cheat toggles button
 	new Button(735, 460, 505, 80, [&](Gui *gui, u16 x, u16 y, bool *isActivated) {
 		gui->drawTextAligned(font20, x + 20, y + 50, currTheme.textColor, "Save Cheat toggles", ALIGNED_LEFT);
-		gui->drawTextAligned(font20, x + 435, y + 50, m_overrideCheatByDefault ? currTheme.selectedColor : Gui::makeColor(0xB8, 0xBB, 0xC2, 0xFF), "--", ALIGNED_LEFT);
+		gui->drawTextAligned(font20, x + 435, y + 50, m_saveCheatToggles ? currTheme.selectedColor : Gui::makeColor(0xB8, 0xBB, 0xC2, 0xFF), m_saveCheatToggles ? "On" : "Off", ALIGNED_LEFT);
 	}, [&](u32 kdown, bool *isActivated) {
 		if (kdown & KEY_A) {
+			m_saveCheatToggles = !m_saveCheatToggles;
+			Ini *ini = Ini::parseFile(SYSTEM_SETTINGS_INI);
+			auto ini_save_cheat_toggles = ini->findSection("atmosphere")->findFirstOption("dmnt_always_save_cheat_toggles ");
+			ini_save_cheat_toggles->value = GuiMain::toggleSystemSetting(m_saveCheatToggles);
 
+			ini->writeToFile(SYSTEM_SETTINGS_INI);
+			delete ini;
 		}
 	}, { 10, -1, 5, -1 }, false);
 }
@@ -275,6 +298,17 @@ void GuiMain::keyCharsToKey(std::string str, u64 *key, bool *overrideByDefault) 
 	else if (str == "SR") *key = KEY_SR;
 }
 
+std::string GuiMain::toggleSystemSetting(bool settingIsTrue) {
+	std::string ret = "";
+	if (settingIsTrue) {
+		ret = " u8!0x1";
+	}
+	else {
+		ret = " u8!0x0";
+	}
+	return ret;
+}
+
 void GuiMain::initLoader(bool *overrideAllAppByDefault, u64 *key, bool *overrideByDefault, u64 *MITMkey, bool *overrideMITMByDefault, u64 *Cheatkey, bool *overrideCheatByDefault) {
 	Ini *ini = Ini::parseFile(LOADER_INI);
 	*overrideAllAppByDefault = (ini->findSection("hbl_config")->findFirstOption("override_any_app")->value == "true");
@@ -284,8 +318,13 @@ void GuiMain::initLoader(bool *overrideAllAppByDefault, u64 *key, bool *override
 	GuiMain::keyCharsToKey(ini->findSection("default_config")->findFirstOption("cheat_enable_key")->value, Cheatkey, overrideCheatByDefault);
 }
 
-void GuiMain::initSystemSettings(void) {
-	
+void GuiMain::initSystemSettings(bool *uploadErrors, bool *usb30, bool *cheatsActiveByDefault, bool *saveCheatToggles) {
+	Ini *ini = Ini::parseFile(SYSTEM_SETTINGS_INI);
+	*uploadErrors = (ini->findSection("eupld")->findFirstOption("upload_enabled ")->value == " u8!0x1");
+	*usb30 = (ini->findSection("usb")->findFirstOption("usb30_force_enabled ")->value == " u8!0x1");
+	//payload behavior will go here
+	*cheatsActiveByDefault = (ini->findSection("atmosphere")->findFirstOption("dmnt_cheats_enabled_by_default ")->value == " u8!0x1");
+	*saveCheatToggles = (ini->findSection("atmosphere")->findFirstOption("dmnt_always_save_cheat_toggles ")->value == " u8!0x1");
 }
 
 AutoBootEntry GuiMain::getAutoBootConfigs(std::vector<AutoBootEntry> &out_bootEntries, u16 &currAutoBootEntryIndex) {
