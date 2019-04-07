@@ -13,6 +13,7 @@ static u16 currOverrideTidIndex;
 
 GuiMain::GuiMain() : Gui() {
 	initLoader(&m_overrideAllAppByDefault, &m_overrideKeyCombo, &m_overrideByDefault, &m_overrideMITMKeyCombo, &m_overrideMITMByDefault, &m_overrideCheatKeyCombo, &m_overrideCheatByDefault);
+	initSystemSettings(&m_uploadErrors, &m_usb30, &m_rebootBehavior, &m_cheatsActiveByDefault, &m_saveCheatToggles);
 	printf("%lx\n", m_overrideKeyCombo);
 
 	m_currAutoBootConfig = getAutoBootConfigs(m_autoBootConfigs, currAutoBootEntryIndex);
@@ -39,9 +40,9 @@ GuiMain::GuiMain() : Gui() {
 	// {Up->Button#, Down->Button#, Left->Button#, Right->Button#}, Interactable
 
 	// Button 1 - Open HBMenu by default button
-	new Button(220, 100, 700, 80, [&](Gui *gui, u16 x, u16 y, bool *isActivated) {
-		gui->drawTextAligned(font20, x + 37, y + 50, currTheme.textColor, "Open HBMenu by default", ALIGNED_LEFT);
-		gui->drawTextAligned(font20, x + 620, y + 50, m_overrideByDefault ? currTheme.selectedColor : Gui::makeColor(0xB8, 0xBB, 0xC2, 0xFF), m_overrideByDefault ? "On" : "Off", ALIGNED_LEFT);
+	new Button(220, 100, 505, 80, [&](Gui *gui, u16 x, u16 y, bool *isActivated) {
+		gui->drawTextAligned(font20, x + 20, y + 50, currTheme.textColor, "Open HBMenu by default", ALIGNED_LEFT);
+		gui->drawTextAligned(font20, x + 435, y + 50, m_overrideByDefault ? currTheme.selectedColor : Gui::makeColor(0xB8, 0xBB, 0xC2, 0xFF), m_overrideByDefault ? "On" : "Off", ALIGNED_LEFT);
 	}, [&](u32 kdown, bool *isActivated) {
 		if (kdown & KEY_A) {
 			m_overrideByDefault = !m_overrideByDefault;
@@ -52,12 +53,12 @@ GuiMain::GuiMain() : Gui() {
 			ini->writeToFile(LOADER_INI);
 			delete ini;
 		}
-	}, { -1, 2, 0, -1 }, false);
+	}, { -1, 2, 0, 7 }, false);
 
 	// Button 2 - Open HBMenu with any app
-	new Button(220, 190, 700, 80, [&](Gui *gui, u16 x, u16 y, bool *isActivated) {
-		gui->drawTextAligned(font20, x + 37, y + 50, currTheme.textColor, "Open HBMenu with any app", ALIGNED_LEFT);
-		gui->drawTextAligned(font20, x + 620, y + 50, m_overrideAllAppByDefault ? currTheme.selectedColor : Gui::makeColor(0xB8, 0xBB, 0xC2, 0xFF), m_overrideAllAppByDefault ? "On" : "Off", ALIGNED_LEFT);
+	new Button(220, 190, 505, 80, [&](Gui *gui, u16 x, u16 y, bool *isActivated) {
+		gui->drawTextAligned(font20, x + 20, y + 50, currTheme.textColor, "Open HBMenu with any app", ALIGNED_LEFT);
+		gui->drawTextAligned(font20, x + 435, y + 50, m_overrideAllAppByDefault ? currTheme.selectedColor : Gui::makeColor(0xB8, 0xBB, 0xC2, 0xFF), m_overrideAllAppByDefault ? "On" : "Off", ALIGNED_LEFT);
 	}, [&](u32 kdown, bool *isActivated) {
 		if (kdown & KEY_A) {
 			m_overrideAllAppByDefault = !m_overrideAllAppByDefault;
@@ -68,12 +69,12 @@ GuiMain::GuiMain() : Gui() {
 			ini->writeToFile(LOADER_INI);
 			delete ini;
 		}
-	}, { 1, 3, 0, -1 }, false);
+	}, { 1, 3, 0, 8 }, false);
 
 	// Button 3 - AMS-Mitm by default button
-	new Button(220, 280, 700, 80, [&](Gui *gui, u16 x, u16 y, bool *isActivated) {
-		gui->drawTextAligned(font20, x + 37, y + 50, currTheme.textColor, "Enable AMS-Mitm by default", ALIGNED_LEFT);
-		gui->drawTextAligned(font20, x + 620, y + 50, m_overrideMITMByDefault ? currTheme.selectedColor : Gui::makeColor(0xB8, 0xBB, 0xC2, 0xFF), m_overrideMITMByDefault ? "On" : "Off", ALIGNED_LEFT);
+	new Button(220, 280, 505, 80, [&](Gui *gui, u16 x, u16 y, bool *isActivated) {
+		gui->drawTextAligned(font20, x + 20, y + 50, currTheme.textColor, "Enable AMS-Mitm by default", ALIGNED_LEFT);
+		gui->drawTextAligned(font20, x + 435, y + 50, m_overrideMITMByDefault ? currTheme.selectedColor : Gui::makeColor(0xB8, 0xBB, 0xC2, 0xFF), m_overrideMITMByDefault ? "On" : "Off", ALIGNED_LEFT);
 	}, [&](u32 kdown, bool *isActivated) {
 		if (kdown & KEY_A) {
 			m_overrideMITMByDefault = !m_overrideMITMByDefault;
@@ -84,7 +85,7 @@ GuiMain::GuiMain() : Gui() {
 			ini->writeToFile(LOADER_INI);
 			delete ini;
 		}
-	}, { 2, 5, 4, -1 }, false);
+	}, { 2, 5, 4, 9 }, false);
 
 	// Button 4 - AMS-Mitm key combo button
 	new Button(40, 280, 170, 170, [&](Gui *gui, u16 x, u16 y, bool *isActivated) {
@@ -107,9 +108,9 @@ GuiMain::GuiMain() : Gui() {
 	}, { 0, 6, -1, 3 }, true);
 
 	// Button 5 - Cheats by default button
-	new Button(220, 370, 700, 80, [&](Gui *gui, u16 x, u16 y, bool *isActivated) {
-		gui->drawTextAligned(font20, x + 37, y + 50, currTheme.textColor, "Enable Cheats by default", ALIGNED_LEFT);
-		gui->drawTextAligned(font20, x + 620, y + 50, m_overrideCheatByDefault ? currTheme.selectedColor : Gui::makeColor(0xB8, 0xBB, 0xC2, 0xFF), m_overrideCheatByDefault ? "On" : "Off", ALIGNED_LEFT);
+	new Button(220, 370, 505, 80, [&](Gui *gui, u16 x, u16 y, bool *isActivated) {
+		gui->drawTextAligned(font20, x + 20, y + 50, currTheme.textColor, "Enable Cheats by default", ALIGNED_LEFT);
+		gui->drawTextAligned(font20, x + 435, y + 50, m_overrideCheatByDefault ? currTheme.selectedColor : Gui::makeColor(0xB8, 0xBB, 0xC2, 0xFF), m_overrideCheatByDefault ? "On" : "Off", ALIGNED_LEFT);
 	}, [&](u32 kdown, bool *isActivated) {
 		if (kdown & KEY_A) {
 			m_overrideCheatByDefault = !m_overrideCheatByDefault;
@@ -120,7 +121,7 @@ GuiMain::GuiMain() : Gui() {
 			ini->writeToFile(LOADER_INI);
 			delete ini;
 		}
-	}, { 3, -1, 4, -1 }, false);
+	}, { 3, -1, 4, 10 }, false);
 
 	// Button 6 - Cheats key combo button
 	new Button(40, 460, 170, 170, [&](Gui *gui, u16 x, u16 y, bool *isActivated) {
@@ -141,6 +142,98 @@ GuiMain::GuiMain() : Gui() {
 			}
 		}
 	}, { 4, -1, -1, 5 }, true);
+
+	// Button 7 - Upload error reports button
+	new Button(735, 100, 505, 80, [&](Gui *gui, u16 x, u16 y, bool *isActivated) {
+		gui->drawTextAligned(font20, x + 20, y + 50, currTheme.textColor, "Upload Error Reports", ALIGNED_LEFT);
+		gui->drawTextAligned(font20, x + 435, y + 50, m_uploadErrors ? currTheme.selectedColor : Gui::makeColor(0xB8, 0xBB, 0xC2, 0xFF), m_uploadErrors ? "On" : "Off", ALIGNED_LEFT);
+	}, [&](u32 kdown, bool *isActivated) {
+		if (kdown & KEY_A) {
+			m_uploadErrors = !m_uploadErrors;
+			Ini *ini = Ini::parseFile(SYSTEM_SETTINGS_INI);
+			auto ini_upload_errors = ini->findSection("eupld")->findFirstOption("upload_enabled ");
+			ini_upload_errors->value = GuiMain::toggleSystemSetting(m_uploadErrors);
+
+			ini->writeToFile(SYSTEM_SETTINGS_INI);
+			delete ini;
+		}
+	}, { -1, 8, 1, -1 }, false);
+
+	// Button 8 - Enable USB 3.0 button
+	new Button(735, 190, 505, 80, [&](Gui *gui, u16 x, u16 y, bool *isActivated) {
+		gui->drawTextAligned(font20, x + 20, y + 50, currTheme.textColor, "Enable USB 3.0", ALIGNED_LEFT);
+		gui->drawTextAligned(font20, x + 435, y + 50, m_usb30 ? currTheme.selectedColor : Gui::makeColor(0xB8, 0xBB, 0xC2, 0xFF), m_usb30 ? "On" : "Off", ALIGNED_LEFT);
+	}, [&](u32 kdown, bool *isActivated) {
+		if (kdown & KEY_A) {
+			m_usb30 = !m_usb30;
+			Ini *ini = Ini::parseFile(SYSTEM_SETTINGS_INI);
+			auto ini_usb_30 = ini->findSection("usb")->findFirstOption("usb30_force_enabled ");
+			ini_usb_30->value = GuiMain::toggleSystemSetting(m_usb30);
+
+			ini->writeToFile(SYSTEM_SETTINGS_INI);
+			delete ini;
+		}
+	}, { 7, 9, 2, -1 }, false);
+
+	// Button 9 - Reboot behavior button
+	new Button(735, 280, 505, 80, [&](Gui *gui, u16 x, u16 y, bool *isActivated) {
+		gui->drawTextAligned(font20, x + 20, y + 50, currTheme.textColor, "Reboot behavior", ALIGNED_LEFT);
+		if (m_rebootBehavior == 0) {
+			gui->drawTextAligned(font20, x + 380, y + 50, currTheme.selectedColor, "Normal", ALIGNED_LEFT);
+		}
+		else if (m_rebootBehavior == 1){
+			gui->drawTextAligned(font20, x + 415, y + 50, currTheme.selectedColor, "RCM", ALIGNED_LEFT);
+		}
+		else {
+			gui->drawTextAligned(font20, x + 375, y + 50, currTheme.selectedColor, "Payload", ALIGNED_LEFT);
+		}
+		
+	}, [&](u32 kdown, bool *isActivated) {
+		if (kdown & KEY_A) {
+			m_rebootBehavior++;
+			if (m_rebootBehavior == 3) {
+				m_rebootBehavior = 0;
+			}
+			Ini *ini = Ini::parseFile(SYSTEM_SETTINGS_INI);
+			auto ini_reboot_behavior = ini->findSection("atmosphere")->findFirstOption("power_menu_reboot_function ");
+			ini_reboot_behavior->value = GuiMain::toggleRebootBehavior(m_rebootBehavior);
+
+			ini->writeToFile(SYSTEM_SETTINGS_INI);
+			delete ini;
+		}
+	}, { 8, 10, 3, -1 }, false);
+
+	// Button 10 - Cheats active by defualt button
+	new Button(735, 370, 505, 80, [&](Gui *gui, u16 x, u16 y, bool *isActivated) {
+		gui->drawTextAligned(font20, x + 20, y + 50, currTheme.textColor, "Cheats active by default", ALIGNED_LEFT);
+		gui->drawTextAligned(font20, x + 435, y + 50, m_cheatsActiveByDefault ? currTheme.selectedColor : Gui::makeColor(0xB8, 0xBB, 0xC2, 0xFF), m_cheatsActiveByDefault ? "On" : "Off", ALIGNED_LEFT);
+	}, [&](u32 kdown, bool *isActivated) {
+		if (kdown & KEY_A) {
+			m_cheatsActiveByDefault = !m_cheatsActiveByDefault;
+			Ini *ini = Ini::parseFile(SYSTEM_SETTINGS_INI);
+			auto ini_cheats_active = ini->findSection("atmosphere")->findFirstOption("dmnt_cheats_enabled_by_default ");
+			ini_cheats_active->value = GuiMain::toggleSystemSetting(m_cheatsActiveByDefault);
+
+			ini->writeToFile(SYSTEM_SETTINGS_INI);
+			delete ini;
+		}
+	}, { 9, 11, 5, -1 }, false);
+
+	// Button 11 - Save Cheat toggles button
+	new Button(735, 460, 505, 80, [&](Gui *gui, u16 x, u16 y, bool *isActivated) {
+		gui->drawTextAligned(font20, x + 20, y + 50, currTheme.textColor, "Save Cheat toggles", ALIGNED_LEFT);
+		gui->drawTextAligned(font20, x + 435, y + 50, m_saveCheatToggles ? currTheme.selectedColor : Gui::makeColor(0xB8, 0xBB, 0xC2, 0xFF), m_saveCheatToggles ? "On" : "Off", ALIGNED_LEFT);
+	}, [&](u32 kdown, bool *isActivated) {
+		if (kdown & KEY_A) {
+			m_saveCheatToggles = !m_saveCheatToggles;
+			Ini *ini = Ini::parseFile(SYSTEM_SETTINGS_INI);
+			auto ini_save_cheat_toggles = ini->findSection("atmosphere")->findFirstOption("dmnt_always_save_cheat_toggles ");
+			ini_save_cheat_toggles->value = GuiMain::toggleSystemSetting(m_saveCheatToggles);
+
+			ini->writeToFile(SYSTEM_SETTINGS_INI);
+			delete ini;
+		}
+	}, { 10, -1, 5, -1 }, false);
 }
 
 GuiMain::~GuiMain() {
@@ -223,6 +316,31 @@ void GuiMain::keyCharsToKey(std::string str, u64 *key, bool *overrideByDefault) 
 	else if (str == "SR") *key = KEY_SR;
 }
 
+std::string GuiMain::toggleSystemSetting(bool settingIsTrue) {
+	std::string ret = "";
+	if (settingIsTrue) {
+		ret = " u8!0x1";
+	}
+	else {
+		ret = " u8!0x0";
+	}
+	return ret;
+}
+
+std::string GuiMain::toggleRebootBehavior(int rebootBehavior) {
+	std::string ret = "";
+	if (rebootBehavior == 0) {
+		ret = " str!normal";
+	}
+	else if (rebootBehavior == 1) {
+		ret = " str!rcm";
+	}
+	else {
+		ret = " str!payload";
+	}
+	return ret;
+}
+
 void GuiMain::initLoader(bool *overrideAllAppByDefault, u64 *key, bool *overrideByDefault, u64 *MITMkey, bool *overrideMITMByDefault, u64 *Cheatkey, bool *overrideCheatByDefault) {
 	Ini *ini = Ini::parseFile(LOADER_INI);
 	*overrideAllAppByDefault = (ini->findSection("hbl_config")->findFirstOption("override_any_app")->value == "true");
@@ -230,6 +348,24 @@ void GuiMain::initLoader(bool *overrideAllAppByDefault, u64 *key, bool *override
 	GuiMain::keyCharsToKey(ini->findSection("hbl_config")->findFirstOption("override_key")->value, key, overrideByDefault);
 	GuiMain::keyCharsToKey(ini->findSection("default_config")->findFirstOption("override_key")->value, MITMkey, overrideMITMByDefault);
 	GuiMain::keyCharsToKey(ini->findSection("default_config")->findFirstOption("cheat_enable_key")->value, Cheatkey, overrideCheatByDefault);
+}
+
+void GuiMain::initSystemSettings(bool *uploadErrors, bool *usb30, int *rebootBehavior, bool *cheatsActiveByDefault, bool *saveCheatToggles) {
+	Ini *ini = Ini::parseFile(SYSTEM_SETTINGS_INI);
+	*uploadErrors = (ini->findSection("eupld")->findFirstOption("upload_enabled ")->value == " u8!0x1");
+	*usb30 = (ini->findSection("usb")->findFirstOption("usb30_force_enabled ")->value == " u8!0x1");
+	*cheatsActiveByDefault = (ini->findSection("atmosphere")->findFirstOption("dmnt_cheats_enabled_by_default ")->value == " u8!0x1");
+	*saveCheatToggles = (ini->findSection("atmosphere")->findFirstOption("dmnt_always_save_cheat_toggles ")->value == " u8!0x1");
+	std::string currBehavior = ini->findSection("atmosphere")->findFirstOption("power_menu_reboot_function ")->value;
+	if (currBehavior == " str!normal") {
+		*rebootBehavior = 0;
+	}
+	else if (currBehavior == " str!rcm") {
+		*rebootBehavior = 1;
+	}
+	else {
+		*rebootBehavior = 2;
+	}
 }
 
 AutoBootEntry GuiMain::getAutoBootConfigs(std::vector<AutoBootEntry> &out_bootEntries, u16 &currAutoBootEntryIndex) {
