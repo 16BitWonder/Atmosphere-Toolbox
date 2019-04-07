@@ -41,7 +41,7 @@ private:
 
 	bool m_uploadErrors;
 	bool m_usb30;
-	std::string m_rebootBehavior;
+	int m_rebootBehavior;
 	bool m_cheatsActiveByDefault;
 	bool m_saveCheatToggles;
 
@@ -54,8 +54,9 @@ private:
 	const char* keyToUnicode(u64 key);
 	std::string keyToKeyChars(u64 key, bool overrideByDefault);
 	std::string toggleSystemSetting(bool settingIsTrue);
+	std::string toggleRebootBehavior(int rebootBehavior);
 	void keyCharsToKey(std::string str, u64 *key, bool *overrideByDefault);
 	AutoBootEntry getAutoBootConfigs(std::vector<AutoBootEntry> &out_bootEntries, u16 &currAutoBootEntryIndex);
 	void initLoader(bool *overrideAllAppByDefault, u64 *key, bool *overrideByDefault, u64 *MITMkey, bool *overrideMITMByDefault, u64 *Cheatkey, bool *overrideCheatByDefault);
-	void initSystemSettings(bool *uploadErrors, bool *usb30, bool *cheatsActiveByDefault, bool *saveCheatToggles);
+	void initSystemSettings(bool *uploadErrors, bool *usb30, int *rebootBehavior, bool *cheatsActiveByDefault, bool *saveCheatToggles);
 };
