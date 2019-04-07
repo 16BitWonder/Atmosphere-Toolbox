@@ -13,7 +13,7 @@ static u16 currOverrideTidIndex;
 
 GuiMain::GuiMain() : Gui() {
 	initLoader(&m_overrideAllAppByDefault, &m_overrideKeyCombo, &m_overrideByDefault, &m_overrideMITMKeyCombo, &m_overrideMITMByDefault, &m_overrideCheatKeyCombo, &m_overrideCheatByDefault);
-	initSystemSettings(&m_uploadErrors, &m_usb30, &m_cheatsActiveByDefault, &m_saveCheatToggles);
+	initSystemSettings(&m_uploadErrors, &m_usb30, &m_rebootBehavior, &m_cheatsActiveByDefault, &m_saveCheatToggles);
 	printf("%lx\n", m_overrideKeyCombo);
 
 	m_currAutoBootConfig = getAutoBootConfigs(m_autoBootConfigs, currAutoBootEntryIndex);
@@ -178,10 +178,28 @@ GuiMain::GuiMain() : Gui() {
 	// Button 9 - Reboot behavior button
 	new Button(735, 280, 505, 80, [&](Gui *gui, u16 x, u16 y, bool *isActivated) {
 		gui->drawTextAligned(font20, x + 20, y + 50, currTheme.textColor, "Reboot behavior", ALIGNED_LEFT);
-		gui->drawTextAligned(font20, x + 435, y + 50, m_overrideCheatByDefault ? currTheme.selectedColor : Gui::makeColor(0xB8, 0xBB, 0xC2, 0xFF), "--", ALIGNED_LEFT);
+		if (m_rebootBehavior == 0) {
+			gui->drawTextAligned(font20, x + 380, y + 50, currTheme.selectedColor, "Normal", ALIGNED_LEFT);
+		}
+		else if (m_rebootBehavior == 1){
+			gui->drawTextAligned(font20, x + 415, y + 50, currTheme.selectedColor, "RCM", ALIGNED_LEFT);
+		}
+		else {
+			gui->drawTextAligned(font20, x + 375, y + 50, currTheme.selectedColor, "Payload", ALIGNED_LEFT);
+		}
+		
 	}, [&](u32 kdown, bool *isActivated) {
 		if (kdown & KEY_A) {
-			// TODO
+			m_rebootBehavior++;
+			if (m_rebootBehavior == 3) {
+				m_rebootBehavior = 0;
+			}
+			Ini *ini = Ini::parseFile(SYSTEM_SETTINGS_INI);
+			auto ini_reboot_behavior = ini->findSection("atmosphere")->findFirstOption("power_menu_reboot_function ");
+			ini_reboot_behavior->value = GuiMain::toggleRebootBehavior(m_rebootBehavior);
+
+			ini->writeToFile(SYSTEM_SETTINGS_INI);
+			delete ini;
 		}
 	}, { 8, 10, 3, -1 }, false);
 
@@ -309,6 +327,20 @@ std::string GuiMain::toggleSystemSetting(bool settingIsTrue) {
 	return ret;
 }
 
+std::string GuiMain::toggleRebootBehavior(int rebootBehavior) {
+	std::string ret = "";
+	if (rebootBehavior == 0) {
+		ret = " str!normal";
+	}
+	else if (rebootBehavior == 1) {
+		ret = " str!rcm";
+	}
+	else {
+		ret = " str!payload";
+	}
+	return ret;
+}
+
 void GuiMain::initLoader(bool *overrideAllAppByDefault, u64 *key, bool *overrideByDefault, u64 *MITMkey, bool *overrideMITMByDefault, u64 *Cheatkey, bool *overrideCheatByDefault) {
 	Ini *ini = Ini::parseFile(LOADER_INI);
 	*overrideAllAppByDefault = (ini->findSection("hbl_config")->findFirstOption("override_any_app")->value == "true");
@@ -318,13 +350,22 @@ void GuiMain::initLoader(bool *overrideAllAppByDefault, u64 *key, bool *override
 	GuiMain::keyCharsToKey(ini->findSection("default_config")->findFirstOption("cheat_enable_key")->value, Cheatkey, overrideCheatByDefault);
 }
 
-void GuiMain::initSystemSettings(bool *uploadErrors, bool *usb30, bool *cheatsActiveByDefault, bool *saveCheatToggles) {
+void GuiMain::initSystemSettings(bool *uploadErrors, bool *usb30, int *rebootBehavior, bool *cheatsActiveByDefault, bool *saveCheatToggles) {
 	Ini *ini = Ini::parseFile(SYSTEM_SETTINGS_INI);
 	*uploadErrors = (ini->findSection("eupld")->findFirstOption("upload_enabled ")->value == " u8!0x1");
 	*usb30 = (ini->findSection("usb")->findFirstOption("usb30_force_enabled ")->value == " u8!0x1");
-	//payload behavior will go here
 	*cheatsActiveByDefault = (ini->findSection("atmosphere")->findFirstOption("dmnt_cheats_enabled_by_default ")->value == " u8!0x1");
 	*saveCheatToggles = (ini->findSection("atmosphere")->findFirstOption("dmnt_always_save_cheat_toggles ")->value == " u8!0x1");
+	std::string currBehavior = ini->findSection("atmosphere")->findFirstOption("power_menu_reboot_function ")->value;
+	if (currBehavior == " str!normal") {
+		*rebootBehavior = 0;
+	}
+	else if (currBehavior == " str!rcm") {
+		*rebootBehavior = 1;
+	}
+	else {
+		*rebootBehavior = 2;
+	}
 }
 
 AutoBootEntry GuiMain::getAutoBootConfigs(std::vector<AutoBootEntry> &out_bootEntries, u16 &currAutoBootEntryIndex) {
