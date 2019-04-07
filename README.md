@@ -8,7 +8,7 @@ A toolkit that allows the user to change the settings of both loader.ini and (ev
 (v1.2.0 Pictured above)
 
 # Current Features
-### Loader.ini
+### loader.ini
 - Reading and modifying of the hbmenu launch button combination 
 - Reading and modifying whether the hbmenu launches by default
 - Reading and modifying whether the hbmenu can be launched from any app
